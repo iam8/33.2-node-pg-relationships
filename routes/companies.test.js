@@ -34,7 +34,6 @@ beforeEach(async () => {
     testComp01 = result01.rows[0];
 })
 
-
 afterEach(async () => {
 
     // Delete company data created by test
@@ -42,9 +41,13 @@ afterEach(async () => {
         DELETE FROM companies`);
 })
 
-
 afterAll(async () => {
 
     // Close DB connection
     await db.end();
+})
+
+
+test("Testing of a test", () => {
+    expect(1).toEqual(1);
 })
