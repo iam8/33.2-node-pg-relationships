@@ -14,6 +14,7 @@ const { app } = require("../app");
 const { db } = require("../db");
 
 let testComp01;
+let testComp02;
 
 
 beforeAll(async () => {
@@ -26,12 +27,14 @@ beforeAll(async () => {
 beforeEach(async () => {
 
     // Add initial company data
-    const result01 = await db.query(`
+    const results = await db.query(`
         INSERT INTO companies (code, name, description)
-        VALUES ('comp01', 'Test Company 01', 'Desc 01')
+        VALUES ('comp01', 'Test Company 01', 'Desc 01'),
+               ('comp02', 'Test Company 02', 'Desc 02')
         RETURNING code, name, description`);
 
-    testComp01 = result01.rows[0];
+    testComp01 = results.rows[0];
+    testComp02 = results.rows[1];
 })
 
 afterEach(async () => {
@@ -48,6 +51,30 @@ afterAll(async () => {
 })
 
 
-test("Testing of a test", () => {
-    expect(1).toEqual(1);
+describe("GET /companies", () => {
+
+    test("Gets a list of companies", async () => {
+        const response = await request(app).get("/companies");
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            companies: [testComp01, testComp02]
+        });
+    })
 })
+
+// describe("GET /companies/:code", () => {
+
+// })
+
+// describe("POST /companies", () => {
+
+// })
+
+// describe("PUT /companies/:code", () => {
+
+// })
+
+// describe("DELETE /companies/:code", () => {
+
+// })
