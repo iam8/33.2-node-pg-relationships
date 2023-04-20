@@ -9,6 +9,7 @@
 process.env.NODE_ENV = "test";
 
 const request = require("supertest");
+// const slugify = require("slugify");
 
 const { app } = require("../app");
 const { db } = require("../db");
@@ -91,9 +92,27 @@ describe("GET /companies/:code", () => {
     })
 })
 
-// describe("POST /companies", () => {
+describe("POST /companies", () => {
 
-// })
+    test("Successfully creates a new company", async () => {
+        const newComp = {
+            name: "New Company",
+            description: "Desc of New Company"
+        }
+
+        const expComp = {...newComp};
+        expComp.code = "new-company";
+
+        const response = await request(app)
+            .post("/companies")
+            .send(newComp);
+
+        expect(response.statusCode).toEqual(201);
+        expect(response.body).toEqual({
+            company: expComp
+        });
+    })
+})
 
 // describe("PUT /companies/:code", () => {
 
