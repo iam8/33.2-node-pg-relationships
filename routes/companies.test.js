@@ -63,9 +63,21 @@ describe("GET /companies", () => {
     })
 })
 
-// describe("GET /companies/:code", () => {
+describe("GET /companies/:code", () => {
 
-// })
+    test("Gets data about a specific company", async () => {
+        const response = await request(app).get(`/companies/${testComp01.code}`);
+
+        const expComp01 = {...testComp01};  // Shallow copy
+        expComp01.invoices = [];
+        expComp01.industries = [];
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            company: expComp01
+        });
+    })
+})
 
 // describe("POST /companies", () => {
 
