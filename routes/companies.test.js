@@ -9,7 +9,6 @@
 process.env.NODE_ENV = "test";
 
 const request = require("supertest");
-// const slugify = require("slugify");
 
 const { app } = require("../app");
 const { db } = require("../db");
@@ -114,9 +113,44 @@ describe("POST /companies", () => {
     })
 })
 
-// describe("PUT /companies/:code", () => {
+describe("PUT /companies/:code", () => {
 
-// })
+    test("Successfully edits an existing company", async () => {
+        const newData = {
+            name: `Updated name`,
+            description: `Updated desc`
+        }
+
+        const expComp = {...newData};
+        expComp.code = `${testComp01.code}`;
+
+        const response = await request(app)
+            .put(`/companies/${testComp01.code}`)
+            .send(newData);
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({company: expComp});
+    })
+
+    test("Returns 404 response for a nonexistent company", async () => {
+        const newData = {
+            name: `Updated name`,
+            description: `Updated desc`
+        }
+
+        const response = await request(app)
+            .put("/companies/nonexistent")
+            .send(newData);
+
+        expect(response.statusCode).toEqual(404);
+        expect(response.body).toEqual({
+            error: {
+                status: 404,
+                message: "Company not found!"
+            }
+        });
+    })
+})
 
 // describe("DELETE /companies/:code", () => {
 
