@@ -152,6 +152,24 @@ describe("PUT /companies/:code", () => {
     })
 })
 
-// describe("DELETE /companies/:code", () => {
+describe("DELETE /companies/:code", () => {
 
-// })
+    test("Successfully deletes an existing company", async () => {
+        const response = await request(app).delete(`/companies/${testComp01.code}`);
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({status: "deleted"});
+    })
+
+    test("Returns 404 response for a nonexistent company", async () => {
+        const response = await request(app).delete("/companies/nonexistent");
+
+        expect(response.statusCode).toEqual(404);
+        expect(response.body).toEqual({
+            error: {
+                status: 404,
+                message: "Company not found!"
+            }
+        });
+    })
+})
