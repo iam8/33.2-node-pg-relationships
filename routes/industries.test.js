@@ -140,7 +140,7 @@ describe("POST /industries", () => {
 
     test("Successfully creates a new industry", async () => {
         const newInd = {
-            code: "newind",
+            code: "newInd",
             industry: "New Industry"
         };
 
@@ -153,9 +153,21 @@ describe("POST /industries", () => {
     })
 })
 
-// describe("POST /industries/:code", () => {
+describe("POST /industries/:code", () => {
 
-//     test("Successfully associates an industry with a company", async () => {
+    test("Successfully associates an industry with a company", async () => {
+        const response = await request(app)
+            .post(`/industries/${testInd01.code}`)
+            .send({
+                comp_code: testComp02.code
+            });
 
-//     })
-// })
+        expect(response.statusCode).toEqual(201);
+        expect(response.body).toEqual({
+            association: {
+                comp_code: testComp02.code,
+                ind_code: testInd01.code
+            }
+        });
+    })
+})
