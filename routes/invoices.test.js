@@ -141,9 +141,61 @@ describe("POST /invoices", () => {
     })
 })
 
-// describe("PUT /invoices/:id", () => {
+describe("PUT /invoices/:id", () => {
 
-// })
+    test("Successfully edits an existing invoice", async () => {
+        const invData = {amt: 1111, paid: false};
+        const response = await request(app)
+            .put(`/invoices/${testInv01.id}`)
+            .send(invData);
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            invoice: {
+                id: expect.any(Number),
+                comp_code: testInv01.comp_code,
+                amt: invData.amt,
+                paid: invData.paid,
+                add_date: expect.any(String),
+                paid_date: null
+            }
+        });
+    })
+
+    test("Successfully updates an existing invoice's paid date", async () => {
+        const invData = {amt: 1111, paid: true};
+        const response = await request(app)
+            .put(`/invoices/${testInv01.id}`)
+            .send(invData);
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            invoice: {
+                id: expect.any(Number),
+                comp_code: testInv01.comp_code,
+                amt: invData.amt,
+                paid: invData.paid,
+                add_date: expect.any(String),
+                paid_date: expect.any(String)
+            }
+        });
+    })
+
+    test("Returns 404 response for a nonexistent invoice", async () => {
+        const invData = {amt: 1111, paid: false};
+        const response = await request(app)
+            .put("/invoices/0")
+            .send(invData);
+
+        expect(response.statusCode).toEqual(404);
+        expect(response.body).toEqual({
+            error: {
+                status: 404,
+                message: "Invoice not found!"
+            }
+        });
+    })
+})
 
 // describe("DELETE /invoices/:id", () => {
 
