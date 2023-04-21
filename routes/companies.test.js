@@ -68,13 +68,13 @@ describe("GET /companies/:code", () => {
     test("Gets data about an existing company", async () => {
         const response = await request(app).get(`/companies/${testComp01.code}`);
 
-        const expComp01 = {...testComp01};  // Shallow copy
+        const expComp = {...testComp01};  // Shallow copy
         expComp01.invoices = [];
         expComp01.industries = [];
 
         expect(response.statusCode).toEqual(200);
         expect(response.body).toEqual({
-            company: expComp01
+            company: expComp
         });
     })
 
