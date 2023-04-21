@@ -42,7 +42,7 @@ beforeEach(async () => {
     const invRes = await db.query(`
         INSERT INTO invoices (comp_code, amt, paid, paid_date)
         VALUES ('${testComp.code}', 333, false, null),
-               ('${testComp.code}', 777, true, '2018-01-01'),
+               ('${testComp.code}', 777, true, '2018-01-01')
         RETURNING id, comp_code, amt, paid, add_date, paid_date`);
 
     testInv01 = invRes.rows[0];
@@ -64,3 +64,40 @@ afterAll(async () => {
     // Close DB connection
     await db.end();
 })
+
+
+describe("GET /invoices", () => {
+
+    test("Gets a list of invoices", async () => {
+
+        // Extract the needed invoice object properties
+        const expInvs = [testInv01, testInv02].map((inv) => {
+            const {id, comp_code} = inv;
+            return {id, comp_code};
+        });
+
+        const response = await request(app).get("/invoices");
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            invoices: expInvs
+        });
+    })
+
+})
+
+// describe("GET /invoices/:id", () => {
+
+// })
+
+// describe("POST /invoices", () => {
+
+// })
+
+// describe("PUT /invoices/:id", () => {
+
+// })
+
+// describe("DELETE /invoices/:id", () => {
+
+// })
