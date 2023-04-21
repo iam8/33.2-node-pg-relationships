@@ -69,8 +69,8 @@ describe("GET /companies/:code", () => {
         const response = await request(app).get(`/companies/${testComp01.code}`);
 
         const expComp = {...testComp01};  // Shallow copy
-        expComp01.invoices = [];
-        expComp01.industries = [];
+        expComp.invoices = [];
+        expComp.industries = [];
 
         expect(response.statusCode).toEqual(200);
         expect(response.body).toEqual({
@@ -159,6 +159,15 @@ describe("DELETE /companies/:code", () => {
 
         expect(response.statusCode).toEqual(200);
         expect(response.body).toEqual({status: "deleted"});
+
+        // Check that the company was actually deleted from database
+        const delComp = await db.query(`
+            SELECT code FROM companies
+            WHERE code = $1`,
+            [testComp01.code]
+        );
+
+        expect(delComp.rows.length).toEqual(0);
     })
 
     test("Returns 404 response for a nonexistent company", async () => {
