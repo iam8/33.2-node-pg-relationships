@@ -97,7 +97,7 @@ describe("GET /invoices/:id", () => {
         expect(response.statusCode).toEqual(200);
         expect(response.body).toEqual({
 
-            // Jsonify object properties and values, due to Date object in expInv
+            // Jsonify expInv properties and values, due to Date object in expInv
             invoice: JSON.parse(JSON.stringify(expInv))
         });
     })
@@ -115,9 +115,31 @@ describe("GET /invoices/:id", () => {
     })
 })
 
-// describe("POST /invoices", () => {
+describe("POST /invoices", () => {
 
-// })
+    test("Successfully creates a new invoice", async () => {
+        const newInv = {
+            comp_code: "comp",
+            amt: 888
+        };
+
+        const response = await request(app)
+            .post("/invoices")
+            .send(newInv);
+
+        expect(response.statusCode).toEqual(201);
+        expect(response.body).toEqual({
+            invoice: {
+                id: expect.any(Number),
+                comp_code: newInv.comp_code,
+                amt: newInv.amt,
+                paid: false,
+                add_date: expect.any(String),
+                paid_date: null
+            }
+        });
+    })
+})
 
 // describe("PUT /invoices/:id", () => {
 
