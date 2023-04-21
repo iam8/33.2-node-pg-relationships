@@ -86,9 +86,34 @@ describe("GET /invoices", () => {
 
 })
 
-// describe("GET /invoices/:id", () => {
+describe("GET /invoices/:id", () => {
 
-// })
+    test("Gets data about an existing invoice", async () => {
+        const response = await request(app).get(`/invoices/${testInv01.id}`);
+
+        const {comp_code, ...expInv} = testInv01;
+        expInv.company = testComp;
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+
+            // Jsonify object properties and values, due to Date object in expInv
+            invoice: JSON.parse(JSON.stringify(expInv))
+        });
+    })
+
+    test("Returns 404 response for a nonexistent invoice", async () => {
+        const response = await request(app).get("/invoices/0");
+
+        expect(response.statusCode).toEqual(404);
+        expect(response.body).toEqual({
+            error: {
+                status: 404,
+                message: "Invoice not found!"
+            }
+        });
+    })
+})
 
 // describe("POST /invoices", () => {
 
