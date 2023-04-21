@@ -197,6 +197,33 @@ describe("PUT /invoices/:id", () => {
     })
 })
 
-// describe("DELETE /invoices/:id", () => {
+describe("DELETE /invoices/:id", () => {
 
-// })
+    test("Successfully deletes an existing invoice", async () => {
+        const response = await request(app).delete(`/invoices/${testInv01.id}`);
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({status: "deleted"});
+
+        // Check that the invoice was actually deleted from database
+        const delInv = await db.query(`
+            SELECT id FROM invoices
+            WHERE id = $1`,
+            [testInv01.id]
+        );
+
+        expect(delInv.rows.length).toEqual(0);
+    })
+
+    test("Returns 404 response for a nonexistent invoice", async () => {
+        const response = await request(app).delete("/invoices/0");
+
+        expect(response.statusCode).toEqual(404);
+        expect(response.body).toEqual({
+            error: {
+                status: 404,
+                message: "Invoice not found!"
+            }
+        });
+    })
+})
